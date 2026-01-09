@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription réussie{% endblock %}
+
+{% block body %}
+<div class="container mt-5 text-center">
+    <div class="alert alert-success">
+        <h2>✅ Compte créé avec succès !</h2>
+        <p>Votre compte <strong>{{ email }}</strong> a été créé.</p>
+        <p>Vous allez être redirigé vers la page de connexion...</p>
+    </div>
+</div>
+
+<script>
+    // Redirection automatique après 5 secondes
+    setTimeout(function() {
+        window.location.href = "{{ path('app_login') }}";
+    }, 5000);
+</script>
+{% endblock %}

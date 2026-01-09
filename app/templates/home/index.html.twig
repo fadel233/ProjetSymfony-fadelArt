@@ -1,0 +1,341 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - FadelArt{% endblock %}
+
+{% block body %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #8f98beff 0%, #764ba2 100%);
+        color: white;
+        padding: 120px 0;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.1)" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,144C960,149,1056,139,1152,128C1248,117,1344,107,1392,101.3L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+        opacity: 0.3;
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .hero-title {
+        font-size: 4rem;
+        font-weight: 800;
+        margin-bottom: 25px;
+        text-shadow: 2px 4px 8px rgba(0,0,0,0.3);
+        animation: fadeInUp 1s ease;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.6rem;
+        margin-bottom: 50px;
+        opacity: 0.95;
+        animation: fadeInUp 1.2s ease;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .btn-custom {
+        padding: 18px 45px;
+        font-size: 1.1rem;
+        margin: 10px;
+        border-radius: 50px;
+        transition: all 0.4s ease;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .btn-custom:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+    }
+    
+    .btn-primary-custom {
+        background: white;
+        color: #667eea;
+        border: none;
+    }
+    
+    .btn-primary-custom:hover {
+        background: #f8f9fa;
+        color: #5568d3;
+    }
+    
+    .btn-outline-custom {
+        background: transparent;
+        color: white;
+        border: 3px solid white;
+    }
+    
+    .btn-outline-custom:hover {
+        background: white;
+        color: #667eea;
+    }
+    
+    .features-section {
+        padding: 100px 0;
+        background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+    }
+    
+    .section-header {
+        margin-bottom: 60px;
+        animation: fadeIn 1.5s ease;
+    }
+    
+    .section-title {
+        font-size: 3rem;
+        font-weight: 800;
+        color: #2d3748;
+        margin-bottom: 15px;
+    }
+    
+    .section-subtitle {
+        font-size: 1.3rem;
+        color: #718096;
+    }
+    
+    .feature-card {
+        text-align: center;
+        padding: 50px 30px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        transition: all 0.4s ease;
+        margin-bottom: 30px;
+        height: 100%;
+        border: 2px solid transparent;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-15px);
+        box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+        border-color: #667eea;
+    }
+    
+    .feature-icon {
+        font-size: 4rem;
+        margin-bottom: 25px;
+        animation: bounce 2s infinite;
+    }
+    
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    .feature-card:nth-child(1) .feature-icon { animation-delay: 0s; }
+    .feature-card:nth-child(2) .feature-icon { animation-delay: 0.2s; }
+    .feature-card:nth-child(3) .feature-icon { animation-delay: 0.4s; }
+    
+    .feature-title {
+        font-size: 1.7rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: #2d3748;
+    }
+    
+    .feature-description {
+        color: #718096;
+        line-height: 1.8;
+        font-size: 1.05rem;
+    }
+    
+    .cta-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 80px 0;
+        color: white;
+        margin-top: 80px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 50%;
+        top: -150px;
+        right: -150px;
+    }
+    
+    .cta-section::after {
+        content: '';
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 50%;
+        bottom: -100px;
+        left: -100px;
+    }
+    
+    .cta-content {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .btn-cta {
+        background: white;
+        color: #667eea;
+        padding: 20px 60px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1.2rem;
+        border: none;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        transition: all 0.4s ease;
+    }
+    
+    .btn-cta:hover {
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+    }
+    
+    .stats-section {
+        padding: 60px 0;
+        background: white;
+    }
+    
+    .stat-item {
+        text-align: center;
+        padding: 30px;
+    }
+    
+    .stat-number {
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: #667eea;
+        margin-bottom: 10px;
+    }
+    
+    .stat-label {
+        font-size: 1.1rem;
+        color: #718096;
+        font-weight: 500;
+    }
+</style>
+
+<!-- Section Hero -->
+<div class="hero-section">
+    <div class="container hero-content">
+        <div class="text-center">
+            <h1 class="hero-title">🎨 Bienvenue sur FadelArt</h1>
+            <p class="hero-subtitle">La plateforme ultime pour partager et découvrir des œuvres d'art exceptionnelles</p>
+            
+            <div class="mt-5">
+                {% if not app.user %}
+                    <a href="{{ path('blog_index') }}" class="btn btn-custom btn-outline-custom">
+                        Découvrir la Galerie
+                    </a>
+                {% else %}
+                    <a href="{{ path('user_article_new') }}" class="btn btn-custom btn-primary-custom">
+                        Créer une Œuvre
+                    </a>
+                    <a href="{{ path('user_article_index') }}" class="btn btn-custom btn-outline-custom">
+                        Mes Articles
+                    </a>
+                {% endif %}
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<!-- Section Stats -->
+<div class="stats-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 stat-item">
+                <div class="stat-number">500+</div>
+                <div class="stat-label">Œuvres Partagées</div>
+            </div>
+            <div class="col-md-4 stat-item">
+                <div class="stat-number">200+</div>
+                <div class="stat-label">Artistes Actifs</div>
+            </div>
+            <div class="col-md-4 stat-item">
+                <div class="stat-number">1000+</div>
+                <div class="stat-label">Visiteurs Mensuels</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section Features -->
+<div class="features-section">
+    <div class="container">
+        <div class="text-center section-header">
+            <h2 class="section-title">Pourquoi choisir FadelArt ?</h2>
+            <p class="section-subtitle">Une plateforme conçue pour les artistes, par des passionnés d'art</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">🖼️</div>
+                    <h3 class="feature-title">Partagez vos Créations</h3>
+                    <p class="feature-description">
+                        Uploadez vos œuvres en quelques clics et partagez votre talent avec une communauté mondiale de passionnés.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <h3 class="feature-title">Communauté Active</h3>
+                    <p class="feature-description">
+                        Connectez-vous avec des artistes du monde entier et découvrez des œuvres qui vous inspirent.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">🚀</div>
+                    <h3 class="feature-title">Interface Intuitive</h3>
+                    <p class="feature-description">
+                        Gestion simplifiée de vos créations avec une interface moderne et facile à utiliser.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div class="cta-section">
+    <div class="container">
+        <div class="text-center cta-content">
+            <h2 style="font-size: 2.8rem; font-weight: 800; margin-bottom: 25px;">
+                Prêt à partager votre art ?
+            </h2>
+            <p style="font-size: 1.4rem; margin-bottom: 40px; opacity: 0.95;">
+                Rejoignez des centaines d'artistes qui partagent déjà leurs créations sur FadelArt
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

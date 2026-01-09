@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}FadelArt{% endblock %}</title>
+        
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        
+        <style>
+            * {
+                font-family: 'Poppins', sans-serif;
+            }
+            
+            body {
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+                background: #f8f9fa;
+            }
+            
+            .navbar {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+                padding: 15px 0;
+            }
+            
+            .navbar-brand {
+                font-size: 1.8rem;
+                font-weight: 700;
+                color: white !important;
+                letter-spacing: 1px;
+            }
+            
+            .navbar-brand i {
+                margin-right: 8px;
+            }
+            
+            .nav-link {
+                color: rgba(255,255,255,0.9) !important;
+                font-weight: 500;
+                margin: 0 10px;
+                transition: all 0.3s;
+                position: relative;
+            }
+            
+            .nav-link:hover {
+                color: white !important;
+                transform: translateY(-2px);
+            }
+            
+            .nav-link::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                width: 0;
+                height: 2px;
+                background: white;
+                transition: all 0.3s;
+                transform: translateX(-50%);
+            }
+            
+            .nav-link:hover::after {
+                width: 80%;
+            }
+            
+            .btn-navbar {
+                background: white;
+                color: #667eea;
+                border: none;
+                padding: 10px 25px;
+                border-radius: 25px;
+                font-weight: 600;
+                margin: 5px;
+                transition: all 0.3s;
+            }
+            
+            .btn-navbar:hover {
+                background: #f8f9fa;
+                color: #667eea;
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            }
+            
+            .dropdown-menu {
+                border: none;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+                border-radius: 10px;
+            }
+            
+            .dropdown-item {
+                padding: 10px 20px;
+                transition: all 0.3s;
+            }
+            
+            .dropdown-item:hover {
+                background: #667eea;
+                color: white;
+                transform: translateX(5px);
+            }
+            
+            main {
+                flex: 1;
+            }
+            
+            footer {
+                background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+                color: white;
+                padding: 50px 0 20px;
+                margin-top: 80px;
+            }
+            
+            footer a {
+                color: #cbd5e0;
+                text-decoration: none;
+                transition: all 0.3s;
+            }
+            
+            footer a:hover {
+                color: white;
+                transform: translateX(5px);
+                display: inline-block;
+            }
+            
+            .footer-title {
+                font-size: 1.3rem;
+                font-weight: 700;
+                margin-bottom: 25px;
+                color: white;
+            }
+            
+            .social-icons a {
+                font-size: 1.5rem;
+                margin: 0 12px;
+                color: #cbd5e0;
+                transition: all 0.3s;
+                display: inline-block;
+            }
+            
+            .social-icons a:hover {
+                color: #667eea;
+                transform: translateY(-5px);
+            }
+            
+            .footer-divider {
+                border-color: #4a5568;
+                margin: 40px 0;
+                opacity: 0.3;
+            }
+            
+            .footer-bottom {
+                color: #cbd5e0;
+                font-size: 0.95rem;
+            }
+            
+            .footer-heart {
+                color: #e53e3e;
+                animation: heartbeat 1.5s ease-in-out infinite;
+            }
+            
+            @keyframes heartbeat {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+            }
+        </style>
+        
+        {% block stylesheets %}
+        {% endblock %}
+    </head>
+    <body>
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+            <div class="container">
+                <a class="navbar-brand" href="{{ path('home') }}">
+                    <i class="fas fa-palette"></i> FadelArt
+                </a>
+                
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto align-items-center">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('home') }}">
+                                <i class="fas fa-home"></i> Accueil
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('blog_index') }}">
+                                <i class="fas fa-images"></i> Galerie
+                            </a>
+                        </li>
+                        
+                        {% if app.user %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('user_article_index') }}">
+                                    <i class="fas fa-folder"></i> Mes Articles
+                                </a>
+                            </li>
+                            
+                            {% if 'ROLE_ADMIN' in app.user.roles %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('easyadmin') }}">
+                                        <i class="fas fa-cog"></i> Admin
+                                    </a>
+                                </li>
+                            {% endif %}
+                            
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-user-circle"></i> {{ app.user.firstName }}
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" href="{{ path('user_article_new') }}">
+                                            <i class="fas fa-plus-circle"></i> Créer un article
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item text-danger" href="{{ path('app_logout') }}">
+                                            <i class="fas fa-sign-out-alt"></i> Déconnexion
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a href="{{ path('app_login') }}" class="btn btn-navbar">
+                                    Connexion
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ path('app_register') }}" class="btn btn-navbar">
+                                    S'inscrire
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Contenu principal -->
+        <main>
+            {% block body %}{% endblock %}
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <h5 class="footer-title">
+                            <i class="fas fa-palette"></i> FadelArt
+                        </h5>
+                        <p style="color: #cbd5e0; line-height: 1.8;">
+                            La plateforme ultime de partage d'œuvres d'art. Rejoignez une communauté passionnée d'artistes et découvrez des créations uniques.
+                        </p>
+                        <div class="social-icons mt-4">
+                            <a href="#" title="Facebook"><i class="fab fa-facebook"></i></a>
+                            <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-2 mb-4">
+                        <h5 class="footer-title">Navigation</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-3"><a href="{{ path('home') }}">Accueil</a></li>
+                            <li class="mb-3"><a href="{{ path('blog_index') }}">Galerie</a></li>
+                            {% if app.user %}
+                                <li class="mb-3"><a href="{{ path('user_article_index') }}">Mes Articles</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    
+                    <div class="col-md-3 mb-4">
+                        <h5 class="footer-title">Compte</h5>
+                        <ul class="list-unstyled">
+                            {% if app.user %}
+                                <li class="mb-3"><a href="{{ path('user_article_new') }}">Créer un article</a></li>
+                                <li class="mb-3"><a href="{{ path('app_logout') }}">Déconnexion</a></li>
+                            {% else %}
+                                <li class="mb-3"><a href="{{ path('app_login') }}">Connexion</a></li>
+                                <li class="mb-3"><a href="{{ path('app_register') }}">Inscription</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    
+                    <div class="col-md-3 mb-4">
+                        <h5 class="footer-title">Contact</h5>
+                        <ul class="list-unstyled" style="color: #cbd5e0;">
+                            <li class="mb-3">
+                                <i class="fas fa-envelope me-2"></i> contact@fadelart.com
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-phone me-2"></i> +33 1 23 45 67 89
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-map-marker-alt me-2"></i> Paris, France
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <hr class="footer-divider">
+                
+                <div class="text-center footer-bottom">
+                    <p class="mb-0">
+                        &copy; {{ 'now'|date('Y') }} FadelArt. Tous droits réservés. 
+
+                    </p>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        
+        {% block javascripts %}
+        {% endblock %}
+    </body>
+</html>

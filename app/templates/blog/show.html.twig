@@ -1,0 +1,332 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ article.title }} - FadelArt{% endblock %}
+
+{% block body %}
+<style>
+    .article-detail-container {
+        padding: 60px 0;
+        background: #f8f9fa;
+        min-height: calc(100vh - 200px);
+    }
+    
+    .article-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        overflow: hidden;
+        margin-bottom: 40px;
+    }
+    
+    .article-image {
+        width: 100%;
+        max-height: 600px;
+        object-fit: cover;
+    }
+    
+    .article-content {
+        padding: 50px;
+    }
+    
+    .article-title {
+        font-size: 3rem;
+        font-weight: 800;
+        color: #2d3748;
+        margin-bottom: 25px;
+        line-height: 1.2;
+    }
+    
+    .article-meta {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 20px 0;
+        border-bottom: 2px solid #e2e8f0;
+        margin-bottom: 30px;
+    }
+    
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #718096;
+        font-size: 1rem;
+    }
+    
+    .meta-item i {
+        color: #667eea;
+        font-size: 1.2rem;
+    }
+    
+    .section-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .section-title i {
+        color: #667eea;
+    }
+    
+    .article-description {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: #4a5568;
+        margin-bottom: 40px;
+        text-align: justify;
+    }
+    
+    .info-section {
+        background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+    }
+    
+    .info-row {
+        display: flex;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .info-row:last-child {
+        border-bottom: none;
+    }
+    
+    .info-label {
+        font-weight: 700;
+        color: #2d3748;
+        width: 150px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .info-label i {
+        color: #667eea;
+    }
+    
+    .info-value {
+        color: #4a5568;
+        font-size: 1.05rem;
+    }
+    
+    .category-badge {
+        display: inline-block;
+        padding: 10px 25px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 50px;
+        font-size: 1rem;
+        font-weight: 700;
+        margin-right: 10px;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+    
+    .artist-badge {
+        display: inline-block;
+        padding: 10px 25px;
+        background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        color: white;
+        border-radius: 50px;
+        font-size: 1rem;
+        font-weight: 700;
+        box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+        margin-top: 40px;
+    }
+    
+    .btn-back {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 15px 40px;
+        border-radius: 50px;
+        font-weight: 700;
+        border: none;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .btn-back:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+    
+    .sidebar {
+        position: sticky;
+        top: 100px;
+    }
+    
+    .sidebar-card {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        margin-bottom: 30px;
+    }
+    
+    .sidebar-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 20px;
+    }
+    
+    .author-info {
+        text-align: center;
+    }
+    
+    .author-avatar {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 2.5rem;
+        color: white;
+        font-weight: 700;
+    }
+    
+    .author-name {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 10px;
+    }
+    
+    .author-articles {
+        color: #718096;
+        font-size: 0.95rem;
+    }
+</style>
+
+<div class="article-detail-container">
+    <div class="container">
+        <div class="row">
+            <!-- Contenu principal -->
+            <div class="col-lg-8">
+                <div class="article-card">
+                    {% if article.imageName %}
+                        <img src="{{ vich_uploader_asset(article, 'imageFile') }}" 
+                             class="article-image" 
+                             alt="{{ article.title }}">
+                    {% endif %}
+                    
+                    <div class="article-content">
+                        <h1 class="article-title">{{ article.title }}</h1>
+                        
+                        <div class="article-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-user-circle"></i>
+                                <span><strong>{{ article.author.firstName }} {{ article.author.lastName }}</strong></span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>{{ article.createdAt|date('d/m/Y') }}</span>
+                            </div>
+                            {% if article.updatedAt %}
+                            <div class="meta-item">
+                                <i class="fas fa-sync-alt"></i>
+                                <span>Modifié le {{ article.updatedAt|date('d/m/Y') }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <h2 class="section-title">
+                            <i class="fas fa-align-left"></i>
+                            Description
+                        </h2>
+                        <p class="article-description">{{ article.description }}</p>
+                        
+                        <div class="info-section">
+                            <div class="info-row">
+                                <div class="info-label">
+                                    <i class="fas fa-tag"></i>
+                                    Catégorie
+                                </div>
+                                <div class="info-value">
+                                    <span class="category-badge">{{ article.category }}</span>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-label">
+                                    <i class="fas fa-user-tie"></i>
+                                    Artiste
+                                </div>
+                                <div class="info-value">
+                                    <span class="artist-badge">{{ article.artist }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="action-buttons">
+                            <a href="{{ path('blog_index') }}" class="btn-back">
+                                <i class="fas fa-arrow-left"></i>
+                                Retour à la galerie
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="sidebar">
+                    <!-- Info auteur -->
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">À propos de l'auteur</h3>
+                        <div class="author-info">
+                            <div class="author-avatar">
+                                {{ article.author.firstName|first }}{{ article.author.lastName|first }}
+                            </div>
+                            <div class="author-name">
+                                {{ article.author.firstName }} {{ article.author.lastName }}
+                            </div>
+                            <p class="author-articles">
+                                <i class="fas fa-palette me-2"></i>
+                                {{ article.author.articles|length }} œuvre(s) partagée(s)
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Statistiques -->
+                    <div class="sidebar-card">
+                        <h3 class="sidebar-title">Détails</h3>
+                        <div style="color: #718096; line-height: 2;">
+                            <p>
+                                <i class="fas fa-calendar-plus" style="color: #667eea; width: 25px;"></i>
+                                Publié le {{ article.createdAt|date('d/m/Y') }}
+                            </p>
+                            <p>
+                                <i class="fas fa-layer-group" style="color: #667eea; width: 25px;"></i>
+                                Catégorie : {{ article.category }}
+                            </p>
+                            <p>
+                                <i class="fas fa-palette" style="color: #667eea; width: 25px;"></i>
+                                Artiste : {{ article.artist }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,53 @@
+services:
+
+  db:
+    image: mysql:8.0
+    container_name: blog_db          # ← Changer
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_DATABASE: blog_db        # ← Changer
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "3308:3306"                  # ← Changer le port (si 3308 est déjà utilisé)
+    volumes:
+      - dbdata:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin
+    ports:
+      - "8083:80"                    # ← Changer (8080 déjà pris)
+    depends_on:
+      - db
+    environment:
+      - PMA_HOST=blog_db             # ← Changer (même nom que container_name)
+      - UPLOAD_LIMIT=64M
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    container_name: blog_app         # ← Changer
+    volumes:
+      - ./app:/app
+    ports:
+      - "8008:8080"                  # ← Changer (8001 déjà pris)
+    env_file:
+      - .env.docker
+    environment:
+      APP_ENV: dev
+      SERVER_NAME: :8080
+      CADDY_MERCURE: "off"
+      XDEBUG_MODE: "${XDEBUG_MODE:-off}"
+    depends_on:
+      - db
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: blog_mailpit     # ← Changer
+    ports:
+      - "8028:8025"                  # ← Changer (8025 peut-être pris)
+      - "1028:1025"                  # ← Changer
+
+volumes:
+  dbdata:

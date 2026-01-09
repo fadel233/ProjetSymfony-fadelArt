@@ -1,0 +1,184 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion - FadelArt{% endblock %}
+
+{% block body %}
+<style>
+    .login-container {
+        min-height: calc(100vh - 200px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+    }
+    
+    .login-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        max-width: 450px;
+        width: 100%;
+        padding: 40px;
+    }
+    
+    .login-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 8px;
+        display: block;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+    
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        outline: none;
+    }
+    
+    .remember-me {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 25px;
+    }
+    
+    .remember-me input {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .remember-me label {
+        margin: 0;
+        color: #4a5568;
+    }
+    
+    .btn-login {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+    
+    .register-link {
+        text-align: center;
+        margin-top: 20px;
+        color: #718096;
+    }
+    
+    .register-link a {
+        color: #667eea;
+        font-weight: 600;
+        text-decoration: none;
+    }
+    
+    .register-link a:hover {
+        text-decoration: underline;
+    }
+    
+    .alert {
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+    
+    .alert-danger {
+        background: #fed7d7;
+        color: #c53030;
+        border: 1px solid #fc8181;
+    }
+    
+    .alert-success {
+        background: #c6f6d5;
+        color: #2f855a;
+        border: 1px solid #9ae6b4;
+    }
+</style>
+
+<div class="login-container">
+    <div class="login-card">
+        <h1 class="login-title">Connexion</h1>
+        
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+        
+        {% if error %}
+            <div class="alert alert-danger">
+                {{ error.messageKey|trans(error.messageData, 'security') }}
+            </div>
+        {% endif %}
+
+        <form method="post">
+            <div class="form-group">
+                <label for="inputEmail" class="form-label">Email</label>
+                <input type="email" 
+                       value="{{ last_username }}" 
+                       name="email" 
+                       id="inputEmail" 
+                       class="form-control" 
+                       placeholder="votre@email.com"
+                       required 
+                       autofocus>
+            </div>
+            
+            <div class="form-group">
+                <label for="inputPassword" class="form-label">Mot de passe</label>
+                <input type="password" 
+                       name="password" 
+                       id="inputPassword" 
+                       class="form-control" 
+                       placeholder="••••••••"
+                       required>
+            </div>
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <div class="remember-me">
+                <input type="checkbox" name="_remember_me" id="remember_me">
+                <label for="remember_me">Se souvenir de moi</label>
+            </div>
+
+            <button class="btn-login" type="submit">
+                Se connecter
+            </button>
+        </form>
+        
+        <div class="register-link">
+            <p>Pas encore inscrit ? <a href="{{ path('app_register') }}">Créer un compte</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

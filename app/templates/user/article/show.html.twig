@@ -1,0 +1,407 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ article.title }} - Galerie d'Art{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --primary-color: #2c2c2c;
+        --accent-color: #d4af37;
+        --text-light: #666;
+        --bg-light: #f8f8f8;
+        --shadow-soft: 0 10px 40px rgba(0,0,0,0.08);
+        --shadow-hover: 0 20px 60px rgba(0,0,0,0.12);
+    }
+    
+    body {
+        font-family: 'Inter', sans-serif;
+        color: var(--primary-color);
+        background: linear-gradient(135deg, #fdfbfb 0%, #f8f8f8 100%);
+        min-height: 100vh;
+    }
+    
+    .article-header {
+        text-align: center;
+        padding: 3rem 0 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .article-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+        animation: shimmer 3s infinite;
+    }
+    
+    @keyframes shimmer {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 1; }
+    }
+    
+    .article-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 3.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+        line-height: 1.2;
+        animation: fadeInUp 0.8s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .article-meta {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin-bottom: 3rem;
+        animation: fadeIn 1s ease-out 0.3s both;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background: white;
+        border-radius: 50px;
+        box-shadow: var(--shadow-soft);
+        transition: all 0.3s ease;
+    }
+    
+    .meta-item:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-hover);
+    }
+    
+    .meta-label {
+        font-weight: 600;
+        color: var(--accent-color);
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+    }
+    
+    .meta-value {
+        color: var(--primary-color);
+        font-weight: 500;
+    }
+    
+    .image-container {
+        position: relative;
+        max-width: 1000px;
+        margin: 0 auto 4rem;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: var(--shadow-hover);
+        animation: scaleIn 0.8s ease-out 0.5s both;
+    }
+    
+    @keyframes scaleIn {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+    
+    .image-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 100%);
+        z-index: 1;
+        pointer-events: none;
+    }
+    
+    .article-image {
+        width: 100%;
+        height: auto;
+        display: block;
+        transition: transform 0.6s ease;
+    }
+    
+    .image-container:hover .article-image {
+        transform: scale(1.05);
+    }
+    
+    .content-section {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        padding: 3rem;
+        border-radius: 20px;
+        box-shadow: var(--shadow-soft);
+        position: relative;
+        animation: fadeInUp 1s ease-out 0.7s both;
+    }
+    
+    .content-section::before {
+        content: '"';
+        position: absolute;
+        top: -20px;
+        left: 30px;
+        font-size: 120px;
+        font-family: 'Playfair Display', serif;
+        color: var(--accent-color);
+        opacity: 0.1;
+    }
+    
+    .description-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8rem;
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .description-title::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background: var(--accent-color);
+    }
+    
+    .description-text {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: var(--text-light);
+        text-align: justify;
+    }
+    
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 4rem;
+        animation: fadeInUp 1.2s ease-out 0.9s both;
+    }
+    
+    .btn-custom {
+        padding: 1rem 2.5rem;
+        border-radius: 50px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.9rem;
+        border: none;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .btn-custom::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+    
+    .btn-custom:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .btn-edit {
+        background: linear-gradient(135deg, var(--accent-color) 0%, #c9a02c 100%);
+        color: white;
+        box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+    }
+    
+    .btn-edit:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(212, 175, 55, 0.4);
+        color: white;
+    }
+    
+    .btn-back {
+        background: white;
+        color: var(--primary-color);
+        border: 2px solid var(--primary-color);
+    }
+    
+    .btn-back:hover {
+        background: var(--primary-color);
+        color: white;
+        transform: translateY(-3px);
+    }
+    
+    .decorative-line {
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+        margin: 3rem 0;
+        opacity: 0.3;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .article-title {
+            font-size: 2.5rem;
+        }
+        
+        .article-meta {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .content-section {
+            padding: 2rem;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .btn-custom {
+            width: 100%;
+        }
+    }
+    
+    /* Effet de particules sur le header */
+    .particle {
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        background: var(--accent-color);
+        border-radius: 50%;
+        opacity: 0;
+        animation: float 4s infinite;
+    }
+    
+    @keyframes float {
+        0% {
+            transform: translateY(0) translateX(0);
+            opacity: 0;
+        }
+        50% {
+            opacity: 0.5;
+        }
+        100% {
+            transform: translateY(-100px) translateX(50px);
+            opacity: 0;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-5 mb-5">
+    <div class="article-header">
+        <h1 class="article-title">{{ article.title }}</h1>
+        
+        <div class="article-meta">
+            <div class="meta-item">
+                <span class="meta-label">Artiste</span>
+                <span class="meta-value">{{ article.artist }}</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Catégorie</span>
+                <span class="meta-value">{{ article.category }}</span>
+            </div>
+        </div>
+    </div>
+    
+    {% if article.imageName %}
+        <div class="image-container">
+            <img src="{{ vich_uploader_asset(article, 'imageFile') }}" 
+                 class="article-image" 
+                 alt="{{ article.title }}"
+                 loading="lazy">
+        </div>
+    {% endif %}
+    
+    <div class="content-section">
+        <h2 class="description-title">Description</h2>
+        <div class="decorative-line"></div>
+        <p class="description-text">{{ article.description }}</p>
+    </div>
+    
+    <div class="action-buttons">
+        <a href="{{ path('user_article_edit', {id: article.id}) }}" class="btn btn-custom btn-edit">
+            ✏️ Modifier l'article
+        </a>
+        <a href="{{ path('user_article_index') }}" class="btn btn-custom btn-back">
+            ← Retour à la galerie
+        </a>
+    </div>
+</div>
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    // Animation au scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -100px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+    
+    // Effet de parallaxe léger sur l'image
+    const imageContainer = document.querySelector('.image-container');
+    if (imageContainer) {
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const rate = scrolled * 0.3;
+            imageContainer.style.transform = `translateY(${rate}px)`;
+        });
+    }
+    
+    // Création de particules décoratives
+    const header = document.querySelector('.article-header');
+    for(let i = 0; i < 10; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.animationDelay = `${Math.random() * 4}s`;
+        header.appendChild(particle);
+    }
+</script>
+{% endblock %}
+{% endblock %}
