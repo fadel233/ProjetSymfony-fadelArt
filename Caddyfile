@@ -1,26 +1,17 @@
 {
   http_port 8080
-  # NOTE: pas d'acme_ca ici en dev
 }
 
 :8080 {
-  root * /app/public
+  root * /app/app/public
   encode gzip zstd
 
-  # 1) Fichiers statiques (CSS/JS/images…)
-  @static {
-    file
-  }
-  handle @static {
-    file_server
+  php_server {
+    index index.php
   }
 
-  # 2) Tout le reste => Symfony via FrankenPHP
-  handle {
-    php_server
-  }
+  file_server
 
-  # Headers utiles
   header {
     X-Frame-Options "SAMEORIGIN"
     X-Content-Type-Options "nosniff"
