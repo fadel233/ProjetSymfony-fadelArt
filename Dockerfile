@@ -35,4 +35,5 @@ CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]
 FROM base AS dev
 ENV APP_ENV=dev
 EXPOSE 8080
-CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]
+CMD sh -c "php bin/console doctrine:migrations:migrate --no-interaction || true && frankenphp run --config /etc/caddy/Caddyfile"
+
