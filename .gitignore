@@ -4,6 +4,7 @@
 /app/.env.*.local
 /app/var/
 /app/vendor/
+.env.docker
 /app/public/bundles/
 /app/public/assets/
 /app/assets/vendor/

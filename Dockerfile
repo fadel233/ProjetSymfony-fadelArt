@@ -1,27 +1,38 @@
 # ========= Base commune =========
 FROM dunglas/frankenphp:1-php8.3-alpine AS base
+
 WORKDIR /app
-# Paquets système (intl, zip, gd, etc. si besoin)
+
 RUN apk add --no-cache \
     icu-dev oniguruma-dev libzip-dev zlib-dev libpng libpng-dev git bash \
  && docker-php-ext-configure intl \
  && docker-php-ext-install -j$(nproc) intl pdo_mysql opcache \
  && apk del libpng-dev || true
-# Composer (fourni par l'image frankenphp via /usr/local/bin/composer)
-# Xdebug optionnel en dev
-ARG INSTALL_XDEBUG=false
-RUN if [ "$INSTALL_XDEBUG" = "true" ]; then \
-      apk add --no-cache $PHPIZE_DEPS \
-      && pecl install xdebug \
-      && docker-php-ext-enable xdebug ; \
-    fi
-# Caddyfile pour FrankenPHP
-COPY ./Caddyfile /etc/caddy/Caddyfile
-# >>> AJOUTER COMPOSER <
+
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
-# ========= Image Dev =========
+COPY ./Caddyfile /etc/caddy/Caddyfile
+
+# ========= PROD =========
+FROM base AS prod
+
+ENV APP_ENV=prod
+ENV APP_DEBUG=0
+
+COPY . /app
+
+RUN composer install \
+    --no-dev \
+    --optimize-autoloader \
+    --no-interaction
+
+RUN php bin/console cache:clear \
+ && php bin/console cache:warmup
+
+EXPOSE 8080
+CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]
+
+# ========= DEV =========
 FROM base AS dev
 ENV APP_ENV=dev
-# Rien à copier : on montera le code en volume
 EXPOSE 8080
 CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]
